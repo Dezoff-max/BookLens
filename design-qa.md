@@ -9,7 +9,7 @@
   - `Documentation/screenshots/02-chatgpt-and-codex.png`
   - `Documentation/screenshots/03-book-characters.png`
   - `Documentation/screenshots/04-about-booklens.png`
-- States: connected ChatGPT account with plan limit, ChatGPT/Codex Settings, a public-domain book workspace with character evidence and artwork, and the About window.
+- States: connected ChatGPT account with plan limit, ChatGPT/Codex Settings, a full-screen *Alice in Wonderland* workspace with character evidence and artwork, and the About window.
 
 ## Resolved findings
 
@@ -26,7 +26,7 @@
 - Both **Use this ChatGPT account** and **Continue without AI** transition to the main interface.
 - Primary and secondary choices are exposed as named accessibility buttons; privacy details are exposed as a disclosure control.
 - The main window opens at the active display's full visible size and uses the same size for the system Zoom action.
-- The four public screenshots contain no private library listing; the workspace capture uses the public-domain novel *The Green Mummy*.
+- The four public screenshots contain no private library listing; the workspace capture uses *Alice in Wonderland* and highlights its larger generated-character gallery.
 
 ## Result
 

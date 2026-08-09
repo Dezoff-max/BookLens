@@ -20,7 +20,7 @@ Signing in or out changes the shared Codex session on that Mac. BookLens never r
 
 | Evidence-backed character workspace | About BookLens |
 | --- | --- |
-| ![BookLens book workspace with character gallery, generated artwork, and verified traits](Documentation/screenshots/03-book-characters.png) | ![About BookLens with local-first privacy and ChatGPT subscription disclosure](Documentation/screenshots/04-about-booklens.png) |
+| ![BookLens full-screen Alice in Wonderland workspace with a rich character gallery, generated artwork, and verified traits](Documentation/screenshots/03-book-characters.png) | ![About BookLens with local-first privacy and ChatGPT subscription disclosure](Documentation/screenshots/04-about-booklens.png) |
 
 ## Features
 
