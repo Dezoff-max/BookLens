@@ -64,7 +64,9 @@ final class AppModel {
     init() {
         selectedModelID = UserDefaults.standard.string(forKey: "selectedCodexModelID") ?? "gpt-5.6-sol"
         selectedReasoningEffort = UserDefaults.standard.string(forKey: "selectedCodexReasoningEffort") ?? "low"
-        languagePreference = "en"
+        languagePreference = BookLensLocalization.normalizedPreference(
+            UserDefaults.standard.string(forKey: "languagePreference") ?? "system"
+        )
         appearancePreference = UserDefaults.standard.string(forKey: "appearancePreference") ?? "system"
         aiFeaturesEnabled = UserDefaults.standard.bool(forKey: "aiFeaturesEnabled")
         aiDisclosureVersion = UserDefaults.standard.integer(forKey: "aiDisclosureVersion")
@@ -84,7 +86,7 @@ final class AppModel {
     }
 
     var analysisOutputLanguage: String {
-        "English"
+        BookLensLocalization.resolvedLanguage(for: languagePreference) == "ru" ? "Russian" : "English"
     }
 
     var preferredColorScheme: ColorScheme? {

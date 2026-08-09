@@ -16,7 +16,8 @@ enum BookLensLocalization {
         // value itself stays backed by UserDefaults so command menus, sheets,
         // and tests all use the same persisted preference.
         _ = state.revision
-        let language = "en"
+        let preference = UserDefaults.standard.string(forKey: "languagePreference") ?? "system"
+        let language = resolvedLanguage(for: normalizedPreference(preference))
 
         for container in candidateBundles() {
             guard let path = container.path(forResource: language, ofType: "lproj"),
@@ -34,7 +35,10 @@ enum BookLensLocalization {
     }
 
     static func normalizedPreference(_ preference: String) -> String {
-        "en"
+        switch preference {
+        case "ru", "en", "system": preference
+        default: "system"
+        }
     }
 
     static func languagePreferenceDidChange() {
@@ -42,7 +46,11 @@ enum BookLensLocalization {
     }
 
     static func resolvedLanguage(for preference: String) -> String {
-        "en"
+        let normalizedPreference = normalizedPreference(preference)
+        if normalizedPreference == "ru" || normalizedPreference == "en" {
+            return normalizedPreference
+        }
+        return Locale.preferredLanguages.first?.hasPrefix("ru") == true ? "ru" : "en"
     }
 
     private static func candidateBundles() -> [Bundle] {

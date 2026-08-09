@@ -58,9 +58,27 @@ final class GenerationProgressRenderingTests: XCTestCase {
         XCTAssertEqual(BookLensLocalization.string("Not checked"), "Not checked")
     }
 
-    func testPublicBuildKeepsEnglishLocale() {
+    func testRussianLocalizationAndAnalysisOutputFollowPreference() {
+        let defaults = UserDefaults.standard
+        let previousPreference = defaults.object(forKey: "languagePreference")
+        defer {
+            if let previousPreference {
+                defaults.set(previousPreference, forKey: "languagePreference")
+            } else {
+                defaults.removeObject(forKey: "languagePreference")
+            }
+            BookLensLocalization.languagePreferenceDidChange()
+        }
+
         let model = AppModel()
         model.setLanguagePreference("ru")
+        XCTAssertEqual(model.preferredLocale.identifier, "ru")
+        XCTAssertEqual(BookLensLocalization.string("Home"), "Главная")
+        XCTAssertEqual(BookLensLocalization.string("Book classification"), "Категория книги")
+        XCTAssertEqual(BookLensLocalization.string("Save"), "Сохранить")
+        XCTAssertEqual(model.analysisOutputLanguage, "Russian")
+
+        model.setLanguagePreference("en")
         XCTAssertEqual(model.preferredLocale.identifier, "en")
         XCTAssertEqual(BookLensLocalization.string("Home"), "Home")
         XCTAssertEqual(model.analysisOutputLanguage, "English")

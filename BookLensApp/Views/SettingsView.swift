@@ -26,9 +26,17 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
 
-                    LabeledContent("Language", value: "English")
+                    Picker("Language", selection: Binding(
+                        get: { model.languagePreference },
+                        set: { model.setLanguagePreference($0) }
+                    )) {
+                        Text("System").tag("system")
+                        Text("Русский").tag("ru")
+                        Text("English").tag("en")
+                    }
+                    .pickerStyle(.segmented)
 
-                    Text("The public BookLens build uses English and follows the macOS appearance setting by default.")
+                    Text("By default, BookLens uses the macOS language and appearance.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

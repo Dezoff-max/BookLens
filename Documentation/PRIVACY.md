@@ -18,9 +18,9 @@ An imported book is analyzed only after the user confirms the point-of-use discl
 
 - a bounded representative selection of chapter text (up to 96,000 characters);
 - book title, author and chapter titles;
-- English as the fixed public-build output language.
+- The output language selected in BookLens (English or Russian).
 
-The confirmation shows the actual selected character count. The original file is not uploaded and is never modified. Local-book analysis runs in a temporary empty workspace with shell, browser, computer-use, image, app, and dynamic tools disabled; unexpected tool events fail the turn. For online discovery, BookLens sends only the user's title/author/character query after AI has been enabled; Codex may research legal public sources in any language, while the structured result is returned in English.
+The confirmation shows the actual selected character count. The original file is not uploaded and is never modified. Local-book analysis runs in a temporary empty workspace with shell, browser, computer-use, image, app, and dynamic tools disabled; unexpected tool events fail the turn. For online discovery, BookLens sends only the user's title/author/character query after AI has been enabled; Codex may research legal public sources in any language, while the structured result is returned in the language selected in BookLens.
 
 Before image generation, BookLens shows a separate confirmation. If accepted, it sends:
 
