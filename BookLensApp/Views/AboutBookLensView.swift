@@ -31,6 +31,7 @@ struct AboutBookLensView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 380)
+                    .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 36)

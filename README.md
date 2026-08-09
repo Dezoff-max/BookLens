@@ -14,13 +14,13 @@ Signing in or out changes the shared Codex session on that Mac. BookLens never r
 
 ## Screenshots
 
-| Onboarding and plan limit | Privacy details |
+| Onboarding and plan limit | ChatGPT and Codex settings |
 | --- | --- |
-| ![BookLens onboarding with the connected ChatGPT account and remaining plan limit](Documentation/screenshots/01-onboarding-account-and-limit.png) | ![BookLens onboarding privacy disclosure](Documentation/screenshots/02-onboarding-privacy.png) |
+| ![BookLens onboarding with the connected ChatGPT account and remaining plan limit](Documentation/screenshots/01-onboarding-account-and-limit.png) | ![BookLens settings showing the connected ChatGPT account, Codex version, and remaining plan limit](Documentation/screenshots/02-chatgpt-and-codex.png) |
 
-| English-only settings | Automatic readiness check in Dark Mode |
+| Evidence-backed character workspace | About BookLens |
 | --- | --- |
-| ![BookLens English-only appearance settings](Documentation/screenshots/03-english-only-settings.png) | ![BookLens checking Codex and the ChatGPT account in dark mode](Documentation/screenshots/04-onboarding-dark.png) |
+| ![BookLens book workspace with character gallery, generated artwork, and verified traits](Documentation/screenshots/03-book-characters.png) | ![About BookLens with local-first privacy and ChatGPT subscription disclosure](Documentation/screenshots/04-about-booklens.png) |
 
 ## Features
 
