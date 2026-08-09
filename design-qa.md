@@ -3,7 +3,7 @@
 ## Visual truth
 
 - Surface: native macOS SwiftUI first-run onboarding.
-- Public documentation and screenshots: English. Application interface: System, English, or Russian.
+- Public documentation and screenshots: English. Application interface: System, English, Russian, or Spanish.
 - Public captures:
   - `Documentation/screenshots/01-onboarding-account-and-limit.png`
   - `Documentation/screenshots/02-chatgpt-and-codex.png`
@@ -17,7 +17,7 @@
 2. P2 — the connection pane was too narrow and vertically centered. The final layout uses a 54/46 split, a wider top-aligned panel, and larger controls.
 3. P1 — selecting the connected ChatGPT account could persist consent without leaving the onboarding screen. The disclosure version and completion flag now update together in `RootView`.
 4. Product clarity — the account card now states that BookLens uses the user's existing ChatGPT subscription and plan limits, with no API key or separate OpenAI API billing.
-5. Localization pass — the shipping bundle supports English and Russian, System follows macOS, analysis output follows the selected app language, and public README/screenshots remain English.
+5. Localization pass — the shipping bundle supports English, Russian, and Spanish, System follows macOS, analysis output follows the selected app language, and public README/screenshots remain English.
 
 ## Final verification
 

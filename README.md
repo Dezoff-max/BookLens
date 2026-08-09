@@ -34,7 +34,7 @@ Signing in or out changes the shared Codex session on that Mac. BookLens never r
 - Local SwiftData library, artwork gallery, comparison, favorites, export, and primary-cover selection.
 - Explicit confirmation before book analysis or image-generation data is sent.
 - Opt-in metadata-only diagnostics with mandatory redaction.
-- English and Russian interface with a System-language mode. Source books and quotations may be in any language.
+- English, Russian, and Spanish interface with a System-language mode. Source books and quotations may be in any language.
 
 ## Requirements
 

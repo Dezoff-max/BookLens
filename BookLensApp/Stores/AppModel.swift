@@ -86,7 +86,11 @@ final class AppModel {
     }
 
     var analysisOutputLanguage: String {
-        BookLensLocalization.resolvedLanguage(for: languagePreference) == "ru" ? "Russian" : "English"
+        switch BookLensLocalization.resolvedLanguage(for: languagePreference) {
+        case "ru": "Russian"
+        case "es": "Spanish"
+        default: "English"
+        }
     }
 
     var preferredColorScheme: ColorScheme? {

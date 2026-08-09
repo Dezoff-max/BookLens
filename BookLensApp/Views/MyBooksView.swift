@@ -215,7 +215,7 @@ private struct ImportedBookCard: View {
             if let progress = ReaderProgressStore.progress(for: book) {
                 VStack(alignment: .leading, spacing: 4) {
                     ProgressView(value: progress)
-                    Text(verbatim: "\(BookLensLocalization.string("Read")) \(Int(progress * 100))%")
+                    Text(verbatim: "\(BookLensLocalization.string("Read progress")) \(Int(progress * 100))%")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

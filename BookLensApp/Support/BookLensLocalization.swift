@@ -36,7 +36,7 @@ enum BookLensLocalization {
 
     static func normalizedPreference(_ preference: String) -> String {
         switch preference {
-        case "ru", "en", "system": preference
+        case "ru", "en", "es", "system": preference
         default: "system"
         }
     }
@@ -47,10 +47,15 @@ enum BookLensLocalization {
 
     static func resolvedLanguage(for preference: String) -> String {
         let normalizedPreference = normalizedPreference(preference)
-        if normalizedPreference == "ru" || normalizedPreference == "en" {
+        if normalizedPreference == "ru" || normalizedPreference == "en" || normalizedPreference == "es" {
             return normalizedPreference
         }
-        return Locale.preferredLanguages.first?.hasPrefix("ru") == true ? "ru" : "en"
+        guard let preferredLanguage = Locale.preferredLanguages.first else {
+            return "en"
+        }
+        if preferredLanguage.hasPrefix("ru") { return "ru" }
+        if preferredLanguage.hasPrefix("es") { return "es" }
+        return "en"
     }
 
     private static func candidateBundles() -> [Bundle] {

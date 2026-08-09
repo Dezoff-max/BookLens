@@ -262,6 +262,7 @@
 "By author" = "By author";
 "sections" = "sections";
 "Read" = "Read";
+"Read progress" = "Read";
 "of" = "of";
 "Open characters" = "Open characters";
 "Show file in Finder" = "Show file in Finder";
@@ -388,3 +389,5 @@
 "BookLens connects through the installed Codex CLI. No API key or separate OpenAI API billing is used." = "BookLens connects through the installed Codex CLI. No API key or separate OpenAI API billing is used.";
 "View BookLens on GitHub" = "View BookLens on GitHub";
 "Source code available on GitHub" = "Source code available on GitHub";
+"Uses your ChatGPT subscription and plan limits — no API key or separate OpenAI API billing." = "Uses your ChatGPT subscription and plan limits — no API key or separate OpenAI API billing.";
+"BookLens uses your existing ChatGPT subscription and plan limits through Codex. No API key or separate OpenAI API billing is used." = "BookLens uses your existing ChatGPT subscription and plan limits through Codex. No API key or separate OpenAI API billing is used.";

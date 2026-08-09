@@ -7,7 +7,7 @@ APP_NAME="BookLens"
 BUNDLE_ID="com.dmitry.booklens"
 MIN_SYSTEM_VERSION="15.0"
 APP_VERSION="${BOOKLENS_APP_VERSION:-1.0.1}"
-BUILD_NUMBER="${BOOKLENS_BUILD_NUMBER:-3}"
+BUILD_NUMBER="${BOOKLENS_BUILD_NUMBER:-4}"
 SIGN_IDENTITY="${BOOKLENS_SIGN_IDENTITY:--}"
 SWIFT_BUILD_DIR="${BOOKLENS_BUILD_DIR:-${TMPDIR:-/tmp}/booklens-swiftpm-build}"
 
@@ -83,6 +83,7 @@ cat >"$STAGED_INFO_PLIST" <<PLIST
   <array>
     <string>en</string>
     <string>ru</string>
+    <string>es</string>
   </array>
   <key>UTImportedTypeDeclarations</key>
   <array>

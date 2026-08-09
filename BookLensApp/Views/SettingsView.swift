@@ -31,8 +31,9 @@ struct SettingsView: View {
                         set: { model.setLanguagePreference($0) }
                     )) {
                         Text("System").tag("system")
-                        Text("Русский").tag("ru")
-                        Text("English").tag("en")
+                        Text(verbatim: "Русский").tag("ru")
+                        Text(verbatim: "English").tag("en")
+                        Text(verbatim: "Español").tag("es")
                     }
                     .pickerStyle(.segmented)
 

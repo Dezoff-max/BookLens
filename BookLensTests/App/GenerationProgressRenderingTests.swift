@@ -58,7 +58,7 @@ final class GenerationProgressRenderingTests: XCTestCase {
         XCTAssertEqual(BookLensLocalization.string("Not checked"), "Not checked")
     }
 
-    func testRussianLocalizationAndAnalysisOutputFollowPreference() {
+    func testLanguageSelectionControlsLocalizationAndAnalysisOutput() {
         let defaults = UserDefaults.standard
         let previousPreference = defaults.object(forKey: "languagePreference")
         defer {
@@ -82,6 +82,17 @@ final class GenerationProgressRenderingTests: XCTestCase {
         XCTAssertEqual(model.preferredLocale.identifier, "en")
         XCTAssertEqual(BookLensLocalization.string("Home"), "Home")
         XCTAssertEqual(model.analysisOutputLanguage, "English")
+
+        model.setLanguagePreference("es")
+        XCTAssertEqual(model.preferredLocale.identifier, "es")
+        XCTAssertEqual(BookLensLocalization.string("Home"), "Inicio")
+        XCTAssertEqual(BookLensLocalization.string("Book classification"), "Clasificación del libro")
+        XCTAssertEqual(BookLensLocalization.string("Save"), "Guardar")
+        XCTAssertEqual(
+            BookLensLocalization.string("Uses your ChatGPT subscription and plan limits — no API key or separate OpenAI API billing."),
+            "Usa tu suscripción y los límites de ChatGPT, sin clave API ni facturación independiente de la API de OpenAI."
+        )
+        XCTAssertEqual(model.analysisOutputLanguage, "Spanish")
     }
 
     func testUnifiedBookCoverRendersEmbeddedAndSelectedGeneratedImages() throws {

@@ -233,7 +233,7 @@ struct BookReaderView: View {
                 VStack(spacing: 5) {
                     ProgressView(value: readingProgress)
                         .frame(width: 160)
-                    Text(verbatim: "\(BookLensLocalization.string("Read")) \(Int(readingProgress * 100))%")
+                    Text(verbatim: "\(BookLensLocalization.string("Read progress")) \(Int(readingProgress * 100))%")
                         .font(.caption)
                         .foregroundStyle(theme.foreground.opacity(0.65))
                 }
