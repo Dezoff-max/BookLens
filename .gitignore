@@ -1,0 +1,43 @@
+.DS_Store
+.build/
+.swiftpm/
+dist/
+.booklens-spike/
+xcuserdata/
+*.xcuserstate
+
+# Local BookLens runtime and release artifacts
+/App/
+/Data/
+*.app/
+*.dmg
+*.dmg.sha256
+*.store
+*.store-*
+*.sqlite
+*.sqlite3
+*.log
+*.previous-*
+
+# Authentication and local configuration must never enter the repository
+.env
+.env.*
+auth.json
+credentials.json
+*.p12
+*.mobileprovision
+
+# Local design experiments not used by the app
+ChatGPT Image*.png
+
+# Local Russian planning and transfer material is intentionally excluded from
+# the English-only public repository.
+/ARCHITECTURE.md
+/MASTER_CODEX_PROMPT.md
+/PRODUCT_SPEC.md
+/ROADMAP.md
+/Documentation/ARCHITECTURE.md
+/TransferAssets/
+/Documentation/onboarding-design-comparison.png
+/Documentation/onboarding-implementation-ru-light.png
+/Documentation/onboarding-reference-option-1.png

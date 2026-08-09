@@ -1,0 +1,22 @@
+{
+  "codexVersion": "0.146.0",
+  "protocol": "app-server-stdio-json-lines",
+  "pinnedMethods": [
+    "initialize",
+    "initialized",
+    "account/read",
+    "account/rateLimits/read",
+    "account/login/start",
+    "account/login/cancel",
+    "account/logout",
+    "thread/start",
+    "turn/start",
+    "turn/interrupt"
+  ],
+  "pinnedNotifications": [
+    "account/login/completed",
+    "item/completed",
+    "turn/completed"
+  ],
+  "secretsIncluded": false
+}
