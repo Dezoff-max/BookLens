@@ -89,10 +89,11 @@ struct SettingsView: View {
                         set: { model.selectModel($0) }
                     )) {
                         ForEach(model.modelOptions) { option in
-                            Text(option.familyName).tag(option.id)
+                            Text(verbatim: option.displayName).tag(option.id)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
+                    .accessibilityIdentifier("codexModelPicker")
 
                     LabeledContent("Reasoning") {
                         Picker("Reasoning", selection: Binding(
@@ -100,13 +101,15 @@ struct SettingsView: View {
                             set: { model.selectReasoningEffort($0) }
                         )) {
                             ForEach(model.reasoningOptions) { option in
-                                Text(reasoningLabel(option.value)).tag(option.value)
+                                Text(LocalizedStringKey(reasoningLabel(option.value))).tag(option.value)
                             }
                         }
                         .labelsHidden()
                         .pickerStyle(.menu)
                     }
-                    Text(verbatim: "\(model.selectedModel?.displayName ?? model.selectedModelID) · \(BookLensLocalization.string(model.modelCatalogIsLive ? "Codex catalog" : "compatible values"))")
+                    Text(model.modelCatalogIsLive
+                         ? "Models and reasoning options are updated from Codex."
+                         : "Offline model list. Check again to verify availability for your account.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

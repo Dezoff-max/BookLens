@@ -391,3 +391,16 @@
 "Source code available on GitHub" = "Исходный код доступен на GitHub";
 "Uses your ChatGPT subscription and plan limits — no API key or separate OpenAI API billing." = "Использует вашу подписку и лимиты ChatGPT — без API-ключа и отдельной оплаты OpenAI API.";
 "BookLens uses your existing ChatGPT subscription and plan limits through Codex. No API key or separate OpenAI API billing is used." = "BookLens использует вашу существующую подписку и лимиты ChatGPT через Codex. API-ключ и отдельная оплата OpenAI API не используются.";
+"Models and reasoning options are updated from Codex." = "Модели и уровни рассуждений обновляются из Codex.";
+"Offline model list. Check again to verify availability for your account." = "Локальный список моделей. Нажмите «Проверить снова», чтобы уточнить доступность для вашего аккаунта.";
+"Fast (low)" = "Быстро (low)";
+"Balanced (medium)" = "Сбалансированно (medium)";
+"Deep (high)" = "Глубоко (high)";
+"Very deep (xhigh)" = "Очень глубоко (xhigh)";
+"Maximum (max)" = "Максимум (max)";
+"Fast" = "Быстро";
+"Balanced" = "Сбалансированно";
+"Deep" = "Глубоко";
+"Very deep" = "Очень глубоко";
+"Maximum" = "Максимум";
+"Ultra" = "Ультра";

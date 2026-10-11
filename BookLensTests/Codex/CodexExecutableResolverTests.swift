@@ -89,6 +89,7 @@ final class CodexExecutableResolverTests: XCTestCase {
     }
 
     func testAcceptsNewerCodexVersion() {
+        XCTAssertTrue(CodexExecutableResolver.versionIsSupported("0.162.1"))
         XCTAssertTrue(CodexExecutableResolver.versionIsSupported("0.200.1"))
         XCTAssertFalse(CodexExecutableResolver.versionIsSupported("0.145.9"))
     }

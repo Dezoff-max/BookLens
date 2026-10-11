@@ -296,17 +296,18 @@ struct StudioView: View {
                 set: { model.selectModel($0) }
             )) {
                 ForEach(model.modelOptions) { option in
-                    Text(option.familyName).tag(option.id)
+                    Text(verbatim: option.displayName).tag(option.id)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
+            .accessibilityIdentifier("studioModelPicker")
 
             Picker("Reasoning", selection: Binding(
                 get: { model.selectedReasoningEffort },
                 set: { model.selectReasoningEffort($0) }
             )) {
                 ForEach(model.reasoningOptions) { option in
-                    Text(reasoningLabel(option.value)).tag(option.value)
+                    Text(LocalizedStringKey(reasoningLabel(option.value))).tag(option.value)
                 }
             }
             Text(verbatim: "\(model.selectedModel?.displayName ?? model.selectedModelID) · \(BookLensLocalization.string("Reasoning")): \(model.selectedReasoningEffort)")

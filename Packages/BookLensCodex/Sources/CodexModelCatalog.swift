@@ -39,12 +39,6 @@ public struct CodexModelOption: Identifiable, Codable, Equatable, Hashable, Send
         self.supportedReasoningEfforts = supportedReasoningEfforts
     }
 
-    public var familyName: String {
-        if id.localizedCaseInsensitiveContains("luna") { return "Luna" }
-        if id.localizedCaseInsensitiveContains("terra") { return "Terra" }
-        if id.localizedCaseInsensitiveContains("sol") { return "Sol" }
-        return displayName
-    }
 }
 
 public struct CodexModelCatalogParser: Sendable {
@@ -54,11 +48,10 @@ public struct CodexModelCatalogParser: Sendable {
         guard let values = response["data"]?.arrayValue else {
             throw BookLensError.protocolViolation(code: "model-list-shape")
         }
-        return try values.map { value in
+        return try values.filter { $0["hidden"]?.boolValue != true }.map { value in
             guard let id = value["id"]?.stringValue,
                   let model = value["model"]?.stringValue,
                   let displayName = value["displayName"]?.stringValue,
-                  let description = value["description"]?.stringValue,
                   let isDefault = value["isDefault"]?.boolValue,
                   let defaultEffort = value["defaultReasoningEffort"]?.stringValue,
                   let efforts = value["supportedReasoningEfforts"]?.arrayValue
@@ -77,11 +70,40 @@ public struct CodexModelCatalogParser: Sendable {
                 id: id,
                 model: model,
                 displayName: displayName,
-                description: description,
+                description: value["description"]?.stringValue ?? "",
                 isDefault: isDefault,
                 defaultReasoningEffort: defaultEffort,
                 supportedReasoningEfforts: reasoning
             )
         }
+    }
+}
+
+/// Loads all picker-visible models without assuming names, generations, or page size.
+public struct CodexModelCatalog: Sendable {
+    public init() {}
+
+    public func load(using client: JSONRPCClient) async throws -> [CodexModelOption] {
+        var models: [CodexModelOption] = []
+        var seenIDs = Set<String>()
+        var seenCursors = Set<String>()
+        var cursor: String?
+        for _ in 0..<20 {
+            var params: [String: JSONValue] = ["includeHidden": false, "limit": 100]
+            if let cursor { params["cursor"] = .string(cursor) }
+            let response = try await client.request(method: "model/list", params: .object(params))
+            models += try CodexModelCatalogParser().parse(response).filter { seenIDs.insert($0.id).inserted }
+            guard let next = response["nextCursor"]?.stringValue, !next.isEmpty else {
+                guard !models.isEmpty else {
+                    throw BookLensError.protocolViolation(code: "model-list-empty")
+                }
+                return models
+            }
+            guard seenCursors.insert(next).inserted else {
+                throw BookLensError.protocolViolation(code: "model-list-cursor")
+            }
+            cursor = next
+        }
+        throw BookLensError.protocolViolation(code: "model-list-page-limit")
     }
 }

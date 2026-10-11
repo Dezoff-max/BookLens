@@ -51,7 +51,7 @@
 
 ## Distribution
 
-- [x] Bundle identifier and versioning for the local 1.0.1 release.
+- [x] Bundle identifier and versioning for the 1.1.0 (5) preview release.
 - [x] 1024 px master app icon and complete macOS ICNS size set.
 - [x] Hardened Runtime in the packaged app signature.
 - [x] Entitlements review; the current local build requests no extra entitlements.

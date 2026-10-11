@@ -2,19 +2,14 @@
 
 ## Compatibility adapter
 
-- Live-tested Codex CLI: `0.146.0`.
+- Current live-tested Codex CLI: `0.162.1` (BookLens 1.1.0, 2026-10-11). Historical baseline: `0.146.0`.
 - Minimum accepted version: `0.146.0`.
 - Newer versions are accepted only provisionally; the live handshake and every used method still have to succeed through the typed adapter.
 - Architecture: `arm64`.
 - Protocol: `codex app-server --stdio`, newline-delimited JSON messages.
 - Auto-update: disabled by design.
 
-Executable search order:
-
-1. helper beside the BookLens executable;
-2. native npm executable under `/opt/homebrew` or `/usr/local`;
-3. `/opt/homebrew/bin/codex`;
-4. `/usr/local/bin/codex`.
+Executable search order: the native npm executable under `/opt/homebrew`, then `/usr/local`, for the current architecture. BookLens does not execute npm JavaScript wrappers or arbitrary binaries on `PATH`.
 
 Environment overrides, arbitrary `PATH` entries, npm JavaScript wrappers, executables resolving outside those roots, group/other-writable binaries, and binaries without the OpenAI Developer ID Team ID `2DC432GLL2` are rejected. BookLens displays the resolved path, version, architecture and verified Team ID.
 
@@ -39,7 +34,23 @@ The `0.146.0` JSON Schema was generated locally with `codex app-server generate-
 
 Unknown fields are tolerated. Optional methods are called only through the compatibility adapter and failures do not leak protocol method names into Domain.
 
-## Live observations
+## Current model discovery (1.1.0)
+
+BookLens uses [`model/list`](https://learn.chatgpt.com/docs/app-server#list-models-modellist) with `includeHidden: false`, follows pagination, removes duplicate IDs, and preserves server ordering. Model names are not filtered by family. Reasoning options and defaults are taken from each model entry, not inferred from its name.
+
+The 2026-10-11 live catalog returned GPT-6.1-Sol (default), GPT-6-Astra, GPT-6-Sol, GPT-6-Luna, and the still-available GPT-5.6 Sol/Terra/Luna models. Catalog visibility depends on Codex and account access; this is not a guarantee for every user.
+
+With Codex 0.162.1, the app's adapter successfully completed:
+
+- executable signature/version checks and `initialize`;
+- `account/read` in ChatGPT mode and `account/rateLimits/read`;
+- all visible models and their reasoning levels via `model/list`;
+- `thread/start` and `turn/start` with each of the four new model IDs;
+- a schema-constrained `{ "probe": "booklens", "value": 42 }` response from each new model, at `low` effort with tools disabled, in isolated temporary workspaces.
+
+No user books or credentials were used for these probes. Image generation, clean-profile login, and logout were not repeated for this model update; earlier evidence below is historical.
+
+## Historical live observations (0.146.0)
 
 - Handshake returned macOS/arm64 and Codex `0.146.0` user agent.
 - A ChatGPT account was present.

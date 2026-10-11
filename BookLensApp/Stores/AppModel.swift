@@ -60,16 +60,18 @@ final class AppModel {
     let importPipeline: BookImportPipeline?
 
     private var loginSession: CodexAppServerSession?
+    private let defaults: UserDefaults
 
-    init() {
-        selectedModelID = UserDefaults.standard.string(forKey: "selectedCodexModelID") ?? "gpt-5.6-sol"
-        selectedReasoningEffort = UserDefaults.standard.string(forKey: "selectedCodexReasoningEffort") ?? "low"
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        selectedModelID = defaults.string(forKey: "selectedCodexModelID") ?? "gpt-6.1-sol"
+        selectedReasoningEffort = defaults.string(forKey: "selectedCodexReasoningEffort") ?? "low"
         languagePreference = BookLensLocalization.normalizedPreference(
-            UserDefaults.standard.string(forKey: "languagePreference") ?? "system"
+            defaults.string(forKey: "languagePreference") ?? "system"
         )
-        appearancePreference = UserDefaults.standard.string(forKey: "appearancePreference") ?? "system"
-        aiFeaturesEnabled = UserDefaults.standard.bool(forKey: "aiFeaturesEnabled")
-        aiDisclosureVersion = UserDefaults.standard.integer(forKey: "aiDisclosureVersion")
+        appearancePreference = defaults.string(forKey: "appearancePreference") ?? "system"
+        aiFeaturesEnabled = defaults.bool(forKey: "aiFeaturesEnabled")
+        aiDisclosureVersion = defaults.integer(forKey: "aiDisclosureVersion")
         do {
             let storage = try FileStorage()
             self.storage = storage
@@ -117,29 +119,32 @@ final class AppModel {
     func completeAIDisclosure(enableAI: Bool) {
         aiDisclosureVersion = Self.currentAIDisclosureVersion
         aiFeaturesEnabled = enableAI
-        UserDefaults.standard.set(aiDisclosureVersion, forKey: "aiDisclosureVersion")
-        UserDefaults.standard.set(enableAI, forKey: "aiFeaturesEnabled")
+        defaults.set(aiDisclosureVersion, forKey: "aiDisclosureVersion")
+        defaults.set(enableAI, forKey: "aiFeaturesEnabled")
     }
 
     func setAIFeaturesEnabled(_ enabled: Bool) {
         aiFeaturesEnabled = enabled
-        UserDefaults.standard.set(enabled, forKey: "aiFeaturesEnabled")
+        defaults.set(enabled, forKey: "aiFeaturesEnabled")
     }
 
     func setLanguagePreference(_ value: String) {
         let normalizedValue = BookLensLocalization.normalizedPreference(value)
-        UserDefaults.standard.set(normalizedValue, forKey: "languagePreference")
+        defaults.set(normalizedValue, forKey: "languagePreference")
         languagePreference = normalizedValue
         BookLensLocalization.languagePreferenceDidChange()
     }
 
     func setAppearancePreference(_ value: String) {
         appearancePreference = value
-        UserDefaults.standard.set(value, forKey: "appearancePreference")
+        defaults.set(value, forKey: "appearancePreference")
     }
 
     func refreshCodex() async {
+        guard codexState != .checking else { return }
         codexState = .checking
+        modelCatalogIsLive = false
+        accountSnapshot = nil
         lastError = nil
         do {
             let installation = try await CodexExecutableResolver().resolve()
@@ -149,17 +154,23 @@ final class AppModel {
                 return
             }
             let session = CodexAppServerSession(installation: installation)
-            _ = try await session.start()
-            let account = try await session.readAccount()
             do {
-                let catalog = try await session.listModels()
-                applyModelCatalog(catalog, isLive: true)
+                _ = try await session.start()
+                let account = try await session.readAccount()
+                do {
+                    let catalog = try await session.listModels()
+                    applyModelCatalog(catalog, isLive: true)
+                } catch {
+                    // Keep the user's selection and last catalog when refresh fails.
+                    modelCatalogIsLive = false
+                }
+                await session.stop()
+                accountSnapshot = account
+                codexState = account.accountType == "chatgpt" ? .available : .loginRequired
             } catch {
-                applyModelCatalog(Self.pinnedModelFallback, isLive: false)
+                await session.stop()
+                throw error
             }
-            await session.stop()
-            accountSnapshot = account
-            codexState = account.accountType == "chatgpt" ? .available : .loginRequired
         } catch let error as BookLensError {
             lastError = error
             codexState = error == .codexNotFound ? .unavailable : .failed(code: error.diagnosticCode)
@@ -270,17 +281,10 @@ final class AppModel {
         }
     }
 
-    private func applyModelCatalog(_ catalog: [CodexModelOption], isLive: Bool) {
-        let order = ["luna": 0, "terra": 1, "sol": 2]
-        let selected = catalog.filter { option in
-            let id = option.id.lowercased()
-            return id.contains("luna") || id.contains("terra") || id.contains("sol")
-        }.sorted { lhs, rhs in
-            func rank(_ option: CodexModelOption) -> Int {
-                order.first(where: { option.id.lowercased().contains($0.key) })?.value ?? 99
-            }
-            return rank(lhs) < rank(rhs)
-        }
+    func applyModelCatalog(_ catalog: [CodexModelOption], isLive: Bool) {
+        // Preserve the server's order and include every visible model, including new families.
+        var seenIDs = Set<String>()
+        let selected = catalog.filter { seenIDs.insert($0.id).inserted }
         guard !selected.isEmpty else { return }
         modelOptions = selected
         modelCatalogIsLive = isLive
@@ -296,8 +300,8 @@ final class AppModel {
     }
 
     private func persistModelSelection() {
-        UserDefaults.standard.set(selectedModelID, forKey: "selectedCodexModelID")
-        UserDefaults.standard.set(selectedReasoningEffort, forKey: "selectedCodexReasoningEffort")
+        defaults.set(selectedModelID, forKey: "selectedCodexModelID")
+        defaults.set(selectedReasoningEffort, forKey: "selectedCodexReasoningEffort")
     }
 
     private static let pinnedModelFallback: [CodexModelOption] = {
@@ -307,6 +311,42 @@ final class AppModel {
             }
         }
         return [
+            CodexModelOption(
+                id: "gpt-6.1-sol",
+                model: "gpt-6.1-sol",
+                displayName: "GPT-6.1-Sol",
+                description: "Sol",
+                isDefault: true,
+                defaultReasoningEffort: "low",
+                supportedReasoningEfforts: efforts(["low", "medium", "high", "xhigh", "max", "ultra"])
+            ),
+            CodexModelOption(
+                id: "gpt-6-astra",
+                model: "gpt-6-astra",
+                displayName: "GPT-6-Astra",
+                description: "Astra",
+                isDefault: false,
+                defaultReasoningEffort: "medium",
+                supportedReasoningEfforts: efforts(["low", "medium", "high", "xhigh", "max", "ultra"])
+            ),
+            CodexModelOption(
+                id: "gpt-6-sol",
+                model: "gpt-6-sol",
+                displayName: "GPT-6-Sol",
+                description: "Sol",
+                isDefault: false,
+                defaultReasoningEffort: "medium",
+                supportedReasoningEfforts: efforts(["low", "medium", "high", "xhigh", "max", "ultra"])
+            ),
+            CodexModelOption(
+                id: "gpt-6-luna",
+                model: "gpt-6-luna",
+                displayName: "GPT-6-Luna",
+                description: "Luna",
+                isDefault: false,
+                defaultReasoningEffort: "medium",
+                supportedReasoningEfforts: efforts(["low", "medium", "high", "xhigh", "max"])
+            ),
             CodexModelOption(
                 id: "gpt-5.6-luna",
                 model: "gpt-5.6-luna",
@@ -330,7 +370,7 @@ final class AppModel {
                 model: "gpt-5.6-sol",
                 displayName: "GPT-5.6-Sol",
                 description: "Sol",
-                isDefault: true,
+                isDefault: false,
                 defaultReasoningEffort: "low",
                 supportedReasoningEfforts: efforts(["low", "medium", "high", "xhigh", "max", "ultra"])
             ),

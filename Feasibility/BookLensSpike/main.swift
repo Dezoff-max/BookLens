@@ -5,6 +5,7 @@ import Foundation
 
 private enum SpikeCommand: String {
     case probe
+    case models
     case toolFree = "tool-free"
     case text
     case cancel
@@ -38,6 +39,8 @@ struct BookLensSpike {
                 switch command {
                 case .probe:
                     try await probe(session)
+                case .models:
+                    try await models(session)
                 case .toolFree:
                     try await toolFreeThread(session)
                 case .text:
@@ -99,12 +102,43 @@ struct BookLensSpike {
         ])
     }
 
+    private static func models(_ session: CodexAppServerSession) async throws {
+        for model in try await session.listModels() {
+            printRecord([
+                "event": "model",
+                "id": model.id,
+                "model": model.model,
+                "displayName": model.displayName,
+                "isDefault": String(model.isDefault),
+                "defaultEffort": model.defaultReasoningEffort,
+                "efforts": model.supportedReasoningEfforts.map(\.value).joined(separator: ","),
+            ])
+        }
+    }
+
     private static func structuredText(_ session: CodexAppServerSession) async throws {
+        guard try await session.readAccount().accountType == "chatgpt" else {
+            throw BookLensError.authenticationRequired
+        }
+        let catalog = try await session.listModels()
+        let requestedID = CommandLine.arguments.dropFirst(2).first
+        guard let model = requestedID.flatMap({ id in catalog.first { $0.id == id } })
+            ?? (requestedID == nil ? catalog.first(where: \.isDefault) : nil) else {
+            throw BookLensError.protocolViolation(code: "probe-model-unavailable")
+        }
+        let effort = model.supportedReasoningEfforts.contains { $0.value == "low" }
+            ? "low" : model.defaultReasoningEffort
+        let workspace = FileManager.default.temporaryDirectory
+            .appendingPathComponent("BookLens-TextProbe-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: workspace, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: workspace) }
         let runner = CodexTurnRunner(session: session)
         let threadID = try await runner.startThread(
-            workingDirectory: URL(fileURLWithPath: FileManager.default.currentDirectoryPath),
+            workingDirectory: workspace,
             baseInstructions: "Answer only with the requested structured data. Do not use tools.",
-            allowFileWrites: false
+            allowFileWrites: false,
+            disableTools: true,
+            modelID: model.model
         )
         let schema: JSONValue = [
             "type": "object",
@@ -118,10 +152,11 @@ struct BookLensSpike {
         let handle = try await runner.startTurn(
             threadID: threadID,
             prompt: "Return probe booklens and value 42.",
-            outputSchema: schema
+            outputSchema: schema,
+            reasoningEffort: effort
         )
-        let outcome = try await runner.waitForCompletion(handle, timeout: .seconds(120))
-        guard let finalMessage = outcome.finalMessage,
+        let outcome = try await runner.waitForCompletion(handle, timeout: .seconds(120), rejectToolUse: true)
+        guard outcome.status == "completed", let finalMessage = outcome.finalMessage,
               let data = finalMessage.data(using: .utf8),
               let object = try JSONSerialization.jsonObject(with: data) as? [String: Any],
               object["probe"] as? String == "booklens",
@@ -131,6 +166,8 @@ struct BookLensSpike {
         }
         printRecord([
             "event": "structuredText",
+            "model": model.model,
+            "effort": effort,
             "status": outcome.status,
             "valid": "true",
         ])

@@ -101,7 +101,7 @@ public actor CodexAppServerSession: CodexAccountServicing {
                 "clientInfo": [
                     "name": "BookLens",
                     "title": "BookLens",
-                    "version": "0.1.0",
+                    "version": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.1.0"),
                 ],
                 "capabilities": ["experimentalApi": true],
             ],
@@ -206,11 +206,7 @@ public actor CodexAppServerSession: CodexAccountServicing {
 
     public func listModels() async throws -> [CodexModelOption] {
         try requireInitialized()
-        let response = try await client.request(
-            method: "model/list",
-            params: ["includeHidden": false, "limit": 100]
-        )
-        return try CodexModelCatalogParser().parse(response)
+        return try await CodexModelCatalog().load(using: client)
     }
 
     public func request(method: String, params: JSONValue? = nil, timeout: Duration? = nil) async throws -> JSONValue {

@@ -14,9 +14,9 @@ Signing in or out changes the shared Codex session on that Mac. BookLens never r
 
 ## Screenshots
 
-| Onboarding and plan limit | ChatGPT and Codex settings |
+| Onboarding and plan limit | ChatGPT models and plan limit |
 | --- | --- |
-| ![BookLens onboarding with the connected ChatGPT account and remaining plan limit](Documentation/screenshots/01-onboarding-account-and-limit.png) | ![BookLens settings showing the connected ChatGPT account, Codex version, and remaining plan limit](Documentation/screenshots/02-chatgpt-and-codex.png) |
+| ![BookLens onboarding with the connected ChatGPT account and remaining plan limit](Documentation/screenshots/01-onboarding-account-and-limit.png) | ![BookLens settings showing GPT-6.1-Sol, reasoning controls, ChatGPT subscription disclosure, and remaining plan limit](Documentation/screenshots/02-chatgpt-and-codex.png) |
 
 | Evidence-backed character workspace | About BookLens |
 | --- | --- |
@@ -31,6 +31,7 @@ Signing in or out changes the shared Codex session on that Mac. BookLens never r
 - Book and character search using public sources when no local file is available.
 - Portrait, full-body, scene, and book-world image generation through `codex app-server` and `$imagegen`.
 - Remaining ChatGPT/Codex plan limit and reset time shown in onboarding, the sidebar, and Settings.
+- Live model discovery from Codex, including GPT-6.1-Sol, GPT-6-Astra, GPT-6-Sol, and GPT-6-Luna when available to your account. Full model names and model-specific reasoning levels appear in Settings and Studio.
 - Local SwiftData library, artwork gallery, comparison, favorites, export, and primary-cover selection.
 - Explicit confirmation before book analysis or image-generation data is sent.
 - Opt-in metadata-only diagnostics with mandatory redaction.
@@ -48,7 +49,9 @@ Install Codex from the official [Codex CLI documentation](https://learn.chatgpt.
 
 ## Download
 
-Download the current preview DMG from [GitHub Releases](https://github.com/Dezoff-max/BookLens/releases/tag/v1.0.1). The preview is ad-hoc signed but is not yet Developer ID signed or notarized, so macOS Gatekeeper may require explicit approval before the first launch.
+Download the **1.1.0 preview** DMG from [GitHub Releases](https://github.com/Dezoff-max/BookLens/releases/tag/v1.1.0). This Apple Silicon build has been live-tested with Codex CLI 0.162.1. The preview is ad-hoc signed but is not yet Developer ID signed or notarized, so macOS Gatekeeper may require explicit approval before the first launch.
+
+Existing model choices are preserved while the model remains available. New installations start with GPT-6.1-Sol; if a saved model disappears from the live catalog, BookLens selects Codex's recommended default. Click **Check again** in **Settings → ChatGPT and Codex** to refresh the catalog. An offline list is clearly labeled and does not guarantee account access. No API key is required.
 
 ## Build and run
 
